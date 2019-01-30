@@ -49,7 +49,7 @@ class Folder(models.Model):
 
 	# Can the user read the folder?
 	def user_can_read(self, user):
-		Log.LogMessage('Checking if user ' + user.username + ' can read folder ' + self.name)
+		Log.LogMessage('Checking if user can read folder ' + self.name, user.username)
 
 		# First get explicit permissions for folder
 		perms = FolderPerm.objects.filter(folder=self)
@@ -57,7 +57,7 @@ class Folder(models.Model):
 		if perms:
 			for p in perms:
 				if user.groups.filter(name=p.group):
-					Log.LogMessage('User ' + user.username + ' has permissions to folder ' + self.name + ' through group ' + p.group)
+					Log.LogMessage('User ' + user.username + ' has permissions to folder ' + self.name + ' through group ' + p.group, user.username)
 					return True
 
 		# Second check for default permissions
@@ -73,16 +73,16 @@ class Folder(models.Model):
 
 		# Finally, return True for default
 		else:
-			Log.LogMessage('Folder ' + self.name + ' has no permissions defined. Defaulting to "R"')
+			Log.LogMessage('Folder ' + self.name + ' has no permissions defined. Defaulting to "R"', user.username)
 			return True
 
 
 	# Can the user write to the folder?
 	def user_can_write(self, user):
-		Log.LogMessage('Checking if user ' + user.username + ' can write folder ' + self.name)
+		Log.LogMessage('Checking if user can write to folder ' + self.name, user.username)
 
 		if (user.is_superuser):
-			Log.LogMessage('User ' + user.username + ' has permissions to folder ' + self.name + ' as superuser')
+			Log.LogMessage('User has permissions to folder ' + self.name + ' as superuser', user.username)
 			return True
 
 		perms = FolderPerm.objects.filter(folder=self)
@@ -92,9 +92,9 @@ class Folder(models.Model):
 			for p in perms:
 				if user.groups.filter(name=p.group):
 					if (p.Mode == 'RW'):
-						Log.LogMessage('User ' + user.username + ' has permissions to folder ' + self.name + ' through group ' + p.name)
+						Log.LogMessage('User has permissions to folder ' + self.name + ' through group ' + p.name, user.username)
 						return True
-			Log.LogMessage('User ' + user.username + ' has permissions to folder ' + self.name)
+			Log.LogMessage('User has permissions to folder ' + self.name, user.username)
 			return False
 
 		# Second check for default permissions
@@ -110,7 +110,7 @@ class Folder(models.Model):
 
 		# Finally, allow reading if nothing is defined
 		else:
-			Log.LogMessage('Folder ' + self.name + ' has no permissions defined. Defaulting to "R".')
+			Log.LogMessage('Folder ' + self.name + ' has no permissions defined. Defaulting to "R".', user.username)
 			return False
 
 
@@ -212,26 +212,27 @@ class History(models.Model):
 	def get_active_ver(self):
 		return History.objects.get(article=self.article, is_active=True)
 
+
 	def set_active(self):
 		self.is_active = True
 		self.save()
+
 
 	def __str__(self):
 		return str(self.article.id) + ' v' + str(self.version) + ' - ' + self.title
 
 
-
-
 class Log(models.Model):
 	timestamp = models.DateTimeField(default=timezone.now)
+	user = models.CharField(max_length=256, default='SYSTEM')
 	message = models.CharField(max_length=1024)
 
 
-	def LogMessage(text):
-		new_entry = Log(message=text)
+	def LogMessage(text, user='SYSTEM'):
+		new_entry = Log(message=text, user=user)
 		new_entry.save()
 
 
 	def __str__(self):
-		log_string = "[" + str(self.timestamp) + "] - " + self.message
+		log_string = "[" + str(self.timestamp) + "] - " + self.user + " - " + self.message
 		return log_string
