@@ -1,0 +1,23 @@
+{% extends 'kb/default_template.html' %}
+
+{% block content %}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{% url 'kb:index' %}">Home</a>
+    </li>
+    <li class="breadcrumb-item">
+      Results for '{{ terms }}'
+    </li>
+  </ol>
+</nav>
+
+
+<nav class="nav-flex-column">
+  {% for a in results %}
+  <a href="{% url 'kb:article' a.id %}" class="nav-link">{{ a.title }}</a>
+  {% endfor %}
+</nav>
+
+{% endblock %}

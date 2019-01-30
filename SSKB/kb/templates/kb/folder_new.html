@@ -1,0 +1,25 @@
+{% extends 'kb/default_template.html' %}
+
+{% block content %}
+
+<div class="card">
+  <h5 class="card-header">Add subfolder to {{ this_folder.name }}</h5>
+  <div class="card-body">
+    <div class="card-text">
+
+      <form action="{% url 'kb:folder_add' this_folder.id %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="folder_name">Name:</label>
+          <input type="text" name="folder_name" class="form-control"/>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+      </form>
+
+    </div><!-- card-text -->
+  </div><!-- card-body -->
+</div><!-- card -->
+
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'kb/default_template.html' %}
+
+{% block content %}
+
+<div class="card">
+  <h3 class="card-header">Articles</h3>
+  <div class="card-body">
+    <nav class="nav-flex-column">
+      {% for a in articles %}
+      <a href="{% url 'kb:article' a.id %}" class="nav-link">{{ a }}</a>
+      {% endfor %}
+    </nav>
+  </div>
+  {% if user_can_write %}
+  <div class="card-footer">
+    <a href="{% url 'kb:article_new' this_folder.id %}" class="btn btn-primary"><i class="far fa-file mr-sm-1"></i> Add Article</a>
+    <a href="{% url 'kb:folder_new' this_folder.id %}" class="btn btn-primary"><i class="far fa-folder mr-sm-1"></i> Add folder</a>
+    <a href="{% url 'kb:folder_perms' this_folder.id %}" class="btn btn-primary"><i class="fas fa-key mr-sm-1"></i> Edit Permissions</a>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

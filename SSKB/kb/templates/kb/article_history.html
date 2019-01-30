@@ -1,0 +1,23 @@
+{% extends 'kb/default_template.html' %}
+
+{% block content %}
+
+<h3>Article History</h3>
+<div class="list-group">
+{% for h in article_history %}
+  {% if h.is_active %}
+  <a href="{% url 'kb:article_version' article.id h.version %}" class="list-group-item flex-column active">
+  {% else %}
+  <a href="{% url 'kb:article_version' article.id h.version %}" class="list-group-item flex-column">
+  {% endif %}
+
+    <h5>Version {{ h.version }} - {{ h.title }}</h5>
+    <small>Published: {{ h.pub_date }}<br/>Author: {{ h.author }}</small>
+
+  </a>
+{% endfor %}
+</div>
+
+  &nbsp;
+
+{% endblock %}

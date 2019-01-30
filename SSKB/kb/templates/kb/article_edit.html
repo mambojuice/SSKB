@@ -1,0 +1,49 @@
+{% extends 'kb/default_template.html' %}
+
+{% block content %}
+
+<form action="{% url 'kb:article_edit_action' article.id %}" method="post">
+  {% csrf_token %}
+
+  <div class="card">
+    <h5 class="card-header">Edit Article</h5>
+    <div class="card-body">
+      <div class="card-text">
+          <div class="form-group">
+            <label for="article_title">Title:</label>
+            <input type="text" name="article_title" class="form-control" value="{{ active_article.title }}"/>
+          </div>
+
+          <div class="form-group">
+            <label for="article_body">Article content:</label>
+            <textarea name="article_body" id="article_body">
+              {{ active_article.content }}
+            </textarea>
+
+            <!-- initialize ckeditor AFTER textarea -->
+            <script>
+              CKEDITOR.replace( 'article_body' );
+            </script>
+            <!-- END initialize ckedit -->
+
+          </div> <!-- form-group -->
+        </div> <!-- card-text -->
+      </div> <!-- card-body -->
+      <div class="card-footer">
+        <div class="form-group">
+          <div class="float-left">
+            <a href="javascript:history.back()" class="btn btn-danger">Cancel</a>
+          </div>
+          <div class="float-right">
+            <button class="btn btn-light" name="action" value="preview">Preview</button>
+            <button class="btn btn-primary" name="action" value="save">Save</button>
+          </div> <!-- float-right -->
+        </div> <!-- form-group -->
+    </div> <!-- card-footer -->
+  </div><!-- card -->
+
+  &nbsp;
+
+</form>
+
+{% endblock %}

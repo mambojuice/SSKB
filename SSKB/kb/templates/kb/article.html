@@ -1,0 +1,28 @@
+{% extends 'kb/default_template.html' %}
+
+{% block content %}
+
+<div class="card">
+  <h3 class="card-header">{{ article }}</h3>
+  <div class="card-body">
+    <div class="card-text">
+      <!-- begin article content -->
+      {{ active_version.content|safe }}
+      <!-- end article content -->
+    </div><!-- card-text -->
+  </div><!-- card-body -->
+
+  <div class="card-footer">
+    <span class="float-right">
+      <a href="{% url 'kb:article_history' article.id %}" class="btn btn-primary">History</a>
+      {% if user_can_write %}
+        {% if active_version.is_active %}<a href="{% url 'kb:article_edit' article.id %}" class="btn btn-primary">Edit</a>{% endif %}
+        {% if not active_version.is_active %}<a href="{% url 'kb:article_version_activate' article.id active_version.version %}" class="btn btn-primary">Make Active</a>{% endif %}
+      {% endif %}
+    </span><!-- float-right -->
+    <div class="small">Published: {{ active_version.pub_date }} (Version {{ active_version.version }})</div>
+    <div class="small">Author: {{ active_version.author }}</div>
+  </div>
+</div><!-- card -->
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'kb/default_template.html' %}
+
+{% block content %}
+
+<div class="card">
+  <h3 class="card-header">Statistics</h3>
+  <div class="card-body">
+    <div class="card-text">
+      <div>
+        Recently updated articles:
+      </div>
+
+      <div>
+        New articles:
+      </div>
+
+      <div>
+        Statistics:
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    {% if user_can_write %}
+      <a href="{% url 'kb:folder_new' this_folder.id %}" class="btn btn-primary"><i class="far fa-folder mr-sm-1"></i> Add folder</a>
+      <a href="#" class="btn btn-primary"><i class="fas fa-key mr-sm-1"></i> Edit Permissions</a>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'kb/default_template.html' %}
+
+{% block content %}
+
+<div class="card">
+  <h5 class="card-header">{{ this_folder.name }} - Permissions</h5>
+  <div class="card-body">
+    <div class="card-text">
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Group</th>
+            <th>Permissions</th>
+            <th>Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for g in perm_groups %}
+          <tr>
+            <td>{{ g.group }}</td>
+            <td>{{ g.mode }}</td>
+            <td>
+              <form class="form form-inline">
+                {% csrf_token %}
+                <select class="form-control mr-sm-2">
+                  <option value="R">Read</option>
+                  <option value="RW">Read/Write</option>
+                  <option value="N">None</option>
+                </select>
+                <input type="submit" class="btn btn-primary" value="Save"/>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div><!-- card-text -->
+  </div><!-- card-body -->
+  <div class="card-footer">
+    <a href="#" class="btn btn-primary">Add group</a>
+  </div><!-- card-footer -->
+</div><!-- card -->
+
+{% endblock %}
