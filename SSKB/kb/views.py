@@ -1,10 +1,12 @@
 import datetime
+import sqlite3
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.template import loader
 from django.utils.html import strip_tags
 from django.db.models.functions import Lower
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as django_login, logout as django_logout
 from django.contrib.auth.decorators import login_required
@@ -403,12 +405,22 @@ def article_edit_action(request, article_id):
 
 
 # Search for a KB article
-# Searches title only FOR NOW
 @login_required(login_url='kb:login')
 def search(request):
     terms = request.POST['search_terms']
 
-    results = History.objects.filter(is_active=True, title__icontains=terms)
+    # Create FTS virtual table
+    db_path = settings.DATABASES['default']['NAME']
+    db = sqlite3.connect(db_path)
+    db.row_factory = lambda cursor, row: row[0]     # so we get real values from our query, not a tuple
+    db.execute('DROP TABLE IF EXISTS vtsearch')
+    db.execute("CREATE VIRTUAL TABLE vtsearch USING fts5(id, title, content, tokenize = 'porter unicode61')")
+    db.execute("INSERT INTO vtsearch(id, title, content) SELECT id, title, content FROM kb_history WHERE is_active = 1")
+
+    # Search the FTS virtual table
+    search = db.execute("SELECT id FROM vtsearch WHERE vtsearch MATCH ? ORDER BY rank", [terms])
+
+    results = History.objects.filter(pk__in=search)
 
     context = {
         'terms': terms,
