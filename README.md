@@ -88,5 +88,5 @@ Superuser created successfully.
 
 8. At this point, you should have enough configured to run the app using Python's development server. Run the following command and browse to http://localhost:8000
 ```bash
-/opt/invoicemanager$ sudo python manage.py runserver 0.0.0.0:8000
+/opt/sskb$ sudo python manage.py runserver 0.0.0.0:8000
 ```
