@@ -16,7 +16,7 @@
 
 <nav class="nav-flex-column">
   {% for a in results %}
-  <a href="{% url 'kb:article' a.id %}" class="nav-link">{{ a.title }}</a>
+  <a href="{% url 'kb:article' a.article_id %}" class="nav-link">{{ a.title }}</a>
   {% endfor %}
 </nav>
 
